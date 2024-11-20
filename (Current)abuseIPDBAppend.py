@@ -6,6 +6,8 @@ from tkinter import messagebox
 # Correct API base URL
 base_url = "https://api.abuseipdb.com/api/v2/check/"
 
+public_url = "https://abuseipdb.com/check/"
+
 ip_list = []
 
 headers = {
@@ -23,7 +25,7 @@ def check_ip():
 
     for ip in ip_addresses:
         url = f"{base_url}"
-        
+        printurl = f"{public_url}{ip}"
         # Request data for the current IP
         response = requests.get(url, headers=headers, params={'ipAddress': ip, 'maxAgeInDays': '90'})
         
@@ -31,18 +33,37 @@ def check_ip():
             decoded_response = response.json()
             raw_output = decoded_response.get("data", {})
             
-            # Extract the desired fields
+            # Extract the desired fields, comment out the fields that are not desired. 
             formatted_output = {
-                '\nIP Address': raw_output.get("ipAddress"),
-                'ISP': raw_output.get("isp"),
-                'Country Code': raw_output.get("countryCode"),
-                'Domain': raw_output.get("domain"),
-                'Abuse Rating': raw_output.get("abuseConfidenceScore")
-            }
+                    "\nIP address": raw_output.get("ipAddress"),
+                    #"IP Version:": raw_output.get("ipVersion"), 
+                    "Usage":raw_output.get("usageType"),
+                    ##"Tor":raw_output.get("isTor"), 
+                    #"Distinct Users":raw_output.get("numDistinctUsers"),
+                    "ISP": raw_output.get("isp"), 
+                    "Country code": raw_output.get("countryCode"),
+                    "Domain": raw_output.get("domain"),
+                    "Total reports":raw_output.get("totalReports"),
+                    #"Last Reported":raw_output.get("lastReportedAt"),
+                    "Abuse rating":raw_output.get("abuseConfidenceScore")} 
             output_string = '\n'.join([f"{key}: {value}" for key, value in formatted_output.items()])
             print(output_string)
+            print("URL:",printurl)
         else:
             print(f"Error fetching data for {ip}: {response.status_code}")
+
+#sample variables with output
+
+#   "ipAddress": "8.8.8.8",
+#         "ipVersion": 4,
+#         "isPublic": true,
+#         "isTor": false,
+#         "isWhitelisted": true,
+#         "isp": "Google LLC",
+#         "lastReportedAt": "2024-11-19T13:45:16+00:00",
+#         "numDistinctUsers": 20,
+#         "totalReports": 47,
+#         "usageType": "Content Delivery Network"
 
 # Set up the main window
 root = tk.Tk()
