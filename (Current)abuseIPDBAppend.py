@@ -8,6 +8,10 @@ base_url = "https://api.abuseipdb.com/api/v2/check/"
 
 public_url = "https://abuseipdb.com/check/"
 
+vt_url = "https://www.virustotal.com/gui/ip-address/"
+
+spur_url = "https://spur.us/context/"
+
 ip_list = []
 
 headers = {
@@ -26,6 +30,8 @@ def check_ip():
     for ip in ip_addresses:
         url = f"{base_url}"
         printurl = f"{public_url}{ip}"
+        printvt = f"{vt_url}{ip}"
+        printspur = f"{spur_url}{ip}"
         # Request data for the current IP
         response = requests.get(url, headers=headers, params={'ipAddress': ip, 'maxAgeInDays': '90'})
         
@@ -48,7 +54,7 @@ def check_ip():
                     "Abuse rating":raw_output.get("abuseConfidenceScore")} 
             output_string = '\n'.join([f"{key}: {value}" for key, value in formatted_output.items()])
             print(output_string)
-            print("URL:",printurl)
+            print("URL:\n",printurl, printvt, printspur)
         else:
             print(f"Error fetching data for {ip}: {response.status_code}")
 
